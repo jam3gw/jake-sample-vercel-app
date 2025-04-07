@@ -3,4 +3,139 @@ description:
 globs: 
 alwaysApply: true
 ---
- 
+---
+description: "Standards for creating meaningful, logical git commits"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git Commit Best Practices
+
+<rule>
+name: git_commit_practices
+description: Standards for creating meaningful, logical git commits
+filters:
+  # Match git commit events
+  - type: event
+    pattern: "git_commit"
+  # Match commit messages
+  - type: content
+    pattern: "^git commit -m"
+  # Match Cursor Agent operations
+  - type: agent
+    pattern: "cursor_git_operation"
+
+actions:
+  - type: reject
+    conditions:
+      - pattern: "^git commit -m \"[a-z]"
+        message: "Commit messages should start with a capital letter"
+      - pattern: "^git commit -m \".{0,10}\"$"
+        message: "Commit messages should be descriptive (at least 10 characters)"
+      - pattern: "^git commit -m \".*[.!?]\"$"
+        message: "Commit messages should not end with punctuation"
+      - pattern: "^git commit -m \"(fix|update|change|add)\""
+        message: "Commit messages should be more specific than generic terms like 'fix' or 'update'"
+
+  - type: suggest
+    message: |
+      When creating git commits:
+
+      1. Commit Structure:
+         ```
+         <type>(<scope>): <description>
+
+         [optional body]
+
+         [optional footer]
+         ```
+
+      2. Commit Types:
+         - feat: New feature
+         - fix: Bug fix
+         - docs: Documentation changes
+         - style: Code style changes (formatting, etc.)
+         - refactor: Code refactoring
+         - test: Adding or modifying tests
+         - chore: Maintenance tasks
+
+      3. Best Practices:
+         - Make atomic commits (one logical change per commit)
+         - Write clear, concise commit messages
+         - Use present tense in commit messages
+         - Keep commits focused and small
+         - Include relevant issue/ticket numbers in footer
+         - Review changes before committing
+         - Commit related changes together
+
+      4. Commit Message Examples:
+         ```
+         # Good examples:
+         feat(auth): add password reset functionality
+         fix(api): resolve rate limiting issue
+         docs(readme): update installation instructions
+         style(components): format button component
+         refactor(utils): extract common validation logic
+         test(auth): add password strength tests
+         chore(deps): update react to v19
+
+         # Bad examples:
+         fix stuff
+         update
+         changed things
+         add new feature
+         ```
+
+      5. Commit Size Guidelines:
+         - Small: 1-3 files changed
+         - Medium: 4-10 files changed
+         - Large: 10+ files (consider breaking into smaller commits)
+
+      6. Cursor Agent Git Operations:
+         When the Cursor Agent performs git operations, it must:
+
+         a) Before Committing:
+            - Check git status
+            - Stage only relevant files
+            - Verify changes are complete
+            - Follow commit message format exactly
+
+         b) Commit Message Creation:
+            - Always use lowercase type prefix
+            - Include scope when context is clear
+            - Be descriptive but concise
+            - Never end with punctuation
+            - Reference issues if applicable
+
+         c) After Committing:
+            - Verify commit was successful
+            - Check if push is needed
+            - Confirm working tree is clean
+
+examples:
+  - input: |
+      # Bad commit messages
+      git commit -m "fix bug"
+      git commit -m "update code"
+      git commit -m "add feature"
+
+      # Good commit messages
+      git commit -m "feat(auth): implement OAuth login"
+      git commit -m "fix(api): resolve 500 error in user endpoint"
+      git commit -m "docs(readme): add deployment instructions"
+
+      # Good Cursor Agent commits
+      git commit -m "feat(rules): add input validation"
+      git commit -m "chore(deps): update typescript to 5.0"
+      git commit -m "docs(api): update endpoint documentation"
+    output: "Correctly formatted git commit message"
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - git
+    - version-control
+    - best-practices
+    - agent-behavior
+</rule>

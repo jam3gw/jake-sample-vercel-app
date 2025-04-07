@@ -1,6 +1,106 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
- 
+---
+description: "Standards for Next.js application development"
+globs: ["**/*.{ts,tsx,js,jsx}", "**/next.config.{js,ts}", "**/middleware.{ts,js}"]
+alwaysApply: true
+---
+
+# Next.js Best Practices
+
+<rule>
+name: nextjs_best_practices
+description: Standards for Next.js application development
+filters:
+  # Match Next.js specific files
+  - type: file_extension
+    pattern: "\\.(tsx|jsx|ts|js)$"
+  # Match Next.js configuration files
+  - type: file_name
+    pattern: "^(next\\.config\\.(js|ts)|middleware\\.(ts|js))$"
+  # Match Next.js specific directories
+  - type: directory
+    pattern: "^(app|pages|components|lib|utils|public|styles)"
+
+actions:
+  - type: reject
+    conditions:
+      - pattern: "use client.*use server"
+        message: "Don't mix 'use client' and 'use server' directives in the same file"
+      - pattern: "getServerSideProps.*getStaticProps"
+        message: "Don't mix getServerSideProps and getStaticProps in the same file"
+      - pattern: "export default function Page.*export const metadata"
+        message: "Metadata should be exported before the page component"
+
+  - type: suggest
+    message: |
+      Next.js Best Practices:
+
+      1. App Router Structure:
+         ```
+         app/
+         ├── (auth)/           # Route groups
+         │   ├── login/
+         │   └── register/
+         ├── (dashboard)/      # Route groups
+         │   ├── layout.tsx
+         │   └── page.tsx
+         ├── api/             # API routes
+         ├── layout.tsx       # Root layout
+         └── page.tsx         # Home page
+         ```
+
+      2. Component Organization:
+         - Use Server Components by default
+         - Mark Client Components with 'use client'
+         - Keep Client Components as leaf nodes
+         - Use React Server Components for data fetching
+         - Implement proper loading and error states
+
+      3. Data Fetching:
+         - Use Server Actions for mutations
+         - Implement proper caching strategies
+         - Use React Suspense for loading states
+         - Implement proper error boundaries
+         - Use SWR or React Query for client-side data
+
+      4. Performance:
+         - Implement proper image optimization
+         - Use next/font for font optimization
+         - Implement proper caching headers
+         - Use dynamic imports for large components
+         - Implement proper code splitting
+
+      5. API Routes:
+         - Use Route Handlers for API endpoints
+         - Implement proper error handling
+         - Use proper HTTP methods
+         - Implement rate limiting
+         - Use proper authentication
+
+      6. Security:
+         - Implement proper CORS
+         - Use environment variables
+         - Implement proper authentication
+         - Use proper input validation
+         - Implement proper error handling
+
+      7. Testing:
+         - Write unit tests for components
+         - Write integration tests for pages
+         - Test API routes
+         - Test authentication flows
+         - Test error scenarios
+
+examples:
+  - input: |
+      # Bad: Mixed directives
+      'use client'
+      'use server'
+      export default function Component() {}
+
+      # Good: Proper component organization
+      //

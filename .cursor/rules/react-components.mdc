@@ -1,6 +1,95 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
- 
+---
+description: "Standards for organizing React components in the project"
+globs: ["**/components/**/*.{tsx,jsx}", "**/app/**/*.{tsx,jsx}"]
+alwaysApply: true
+---
+
+# React Components Organization
+
+<rule>
+name: react_components_organization
+description: Standards for organizing React components in the project
+filters:
+  # Match React component files
+  - type: file_extension
+    pattern: "\\.(tsx|jsx)$"
+  # Match component creation events
+  - type: event
+    pattern: "file_create"
+
+actions:
+  - type: reject
+    conditions:
+      - pattern: "^(?!components/(ui|features|layouts)/.*\\.(tsx|jsx)$)"
+        message: "React components must be placed in components/ui/, components/features/, or components/layouts/ directories"
+      - pattern: ".*[a-z]+\\.(tsx|jsx)$"
+        message: "Component filenames must use PascalCase (e.g., Button.tsx, not button.tsx)"
+
+  - type: suggest
+    message: |
+      When creating React components:
+
+      1. Place components in the appropriate directory:
+         ```
+         components/
+         ├── ui/           # Reusable UI components
+         ├── features/     # Feature-specific components
+         └── layouts/      # Layout components
+         ```
+
+      2. Follow the naming convention:
+         - Use PascalCase for component names
+         - Match the filename with the component name
+         - Use .tsx extension for TypeScript components
+         - Avoid generic names like 'Component.tsx'
+
+      3. Component structure:
+         ```
+         components/
+         ├── ui/
+         │   ├── Button.tsx
+         │   └── Card.tsx
+         ├── features/
+         │   ├── auth/
+         │   │   └── LoginForm.tsx
+         │   └── dashboard/
+         │       └── DashboardCard.tsx
+         └── layouts/
+             └── MainLayout.tsx
+         ```
+
+      4. Best practices:
+         - Keep components small and focused (max 200 lines)
+         - Use TypeScript for type safety
+         - Include PropTypes or TypeScript interfaces
+         - Follow React hooks rules
+         - Use proper component composition
+         - Export components as named exports
+         - Include a README.md in feature directories
+
+examples:
+  - input: |
+      # Bad: Component in wrong location
+      src/Button.tsx
+      components/button.tsx
+      components/Component.tsx
+
+      # Good: Component in correct location
+      components/ui/Button.tsx
+      components/features/auth/LoginForm.tsx
+      components/layouts/MainLayout.tsx
+    output: "Correctly placed React component"
+
+metadata:
+  priority: high
+  version: 1.1
+  tags:
+    - react
+    - components
+    - organization
+</rule>

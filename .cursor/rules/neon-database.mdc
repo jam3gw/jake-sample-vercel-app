@@ -3,4 +3,116 @@ description:
 globs: 
 alwaysApply: true
 ---
- 
+---
+description: "Standards for Neon database usage in Next.js applications"
+globs: ["**/db.{ts,js}", "**/database.{ts,js}", "**/lib/db/**/*"]
+alwaysApply: true
+---
+
+# Neon Database Best Practices
+
+<rule>
+name: neon_database_best_practices
+description: Standards for Neon database usage in Next.js applications
+filters:
+  # Match database related files
+  - type: file_extension
+    pattern: "\\.(ts|js)$"
+  # Match database configuration files
+  - type: file_name
+    pattern: "^(db\\.config\\.(ts|js)|schema\\.(ts|js)|migrations/.*\\.(ts|js))$"
+  # Match database utility files
+  - type: directory
+    pattern: "^(lib/db|utils/db|db)"
+
+actions:
+  - type: reject
+    conditions:
+      - pattern: "new Pool\\(.*\\)"
+        message: "Use the @neondatabase/serverless driver instead of node-postgres Pool"
+      - pattern: "process\\.env\\.DATABASE_URL"
+        message: "Use proper environment variable management for database connections"
+      - pattern: "SELECT \\* FROM"
+        message: "Avoid SELECT * queries, specify columns explicitly"
+
+  - type: suggest
+    message: |
+      Neon Database Best Practices:
+
+      1. Connection Management:
+         - Use @neondatabase/serverless driver
+         - Implement connection pooling
+         - Use environment variables for configuration
+         - Implement proper error handling
+         - Use connection timeouts
+
+      2. Query Optimization:
+         - Use prepared statements
+         - Implement proper indexing
+         - Use appropriate data types
+         - Implement query timeouts
+         - Use proper pagination
+
+      3. Schema Design:
+         - Use proper naming conventions
+         - Implement proper constraints
+         - Use appropriate data types
+         - Implement proper indexing
+         - Use proper relationships
+
+      4. Security:
+         - Use parameterized queries
+         - Implement proper access control
+         - Use proper encryption
+         - Implement proper auditing
+         - Use proper backup strategies
+
+      5. Performance:
+         - Implement proper caching
+         - Use appropriate indexes
+         - Optimize query patterns
+         - Use proper connection pooling
+         - Implement proper monitoring
+
+      6. Error Handling:
+         - Implement proper error logging
+         - Use proper error types
+         - Implement retry logic
+         - Use proper transaction management
+         - Implement proper rollback strategies
+
+      7. Testing:
+         - Write unit tests for queries
+         - Test connection handling
+         - Test error scenarios
+         - Test performance
+         - Test security
+
+examples:
+  - input: |
+      # Bad: Direct connection without pooling
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL
+      });
+
+      # Good: Using @neondatabase/serverless
+      import { neon } from '@neondatabase/serverless';
+      const sql = neon(process.env.DATABASE_URL!);
+      
+      // Using prepared statements
+      const result = await sql`
+        SELECT id, name, email 
+        FROM users 
+        WHERE id = ${userId}
+      `;
+    output: "Correctly configured Neon database connection"
+
+metadata:
+  priority: high
+  version: 1.0
+  tags:
+    - neon
+    - database
+    - postgres
+    - best-practices
+</rule>
