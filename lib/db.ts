@@ -5,7 +5,16 @@ let sql: NeonQueryFunction<any, any>
 
 export function getSQLClient() {
   if (!sql) {
-    sql = neon(process.env.DATABASE_URL!)
+    // Use different database URLs based on environment
+    const databaseUrl = process.env.NODE_ENV === 'development' 
+      ? process.env.DEV_DATABASE_URL 
+      : process.env.DATABASE_URL
+
+    if (!databaseUrl) {
+      throw new Error('Database URL is not defined')
+    }
+
+    sql = neon(databaseUrl)
   }
   return sql
 }
