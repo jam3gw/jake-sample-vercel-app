@@ -21,10 +21,10 @@ export type Note = {
 export async function getNotes(): Promise<Note[]> {
   try {
     const sql = getSQLClient()
-    const notes = await sql<Note[]>`
+    const notes = await sql`
       SELECT * FROM notes ORDER BY created_at DESC
     `
-    return notes
+    return notes as Note[]
   } catch (error) {
     console.error("Error fetching notes:", error)
     return []
@@ -35,11 +35,11 @@ export async function getNotes(): Promise<Note[]> {
 export async function createNote(content: string): Promise<Note | null> {
   try {
     const sql = getSQLClient()
-    const [note] = await sql<Note[]>`
+    const result = await sql`
       INSERT INTO notes (content) VALUES (${content}) 
       RETURNING *
     `
-    return note
+    return (result as Note[])[0] || null
   } catch (error) {
     console.error("Error creating note:", error)
     return null
