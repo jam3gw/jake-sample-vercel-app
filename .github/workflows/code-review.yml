@@ -16,21 +16,26 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install flake8 black bandit pyyaml
-          npm install
-          npm install -g next@latest
+          pnpm install
+          pnpm add -g next@latest
 
       - name: Run code review
-        uses: jam3gw/github-review-bot@v1.0.0  # This is where you reference your bot
+        uses: jam3gw/github-review-bot@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
