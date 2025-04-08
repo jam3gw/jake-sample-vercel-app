@@ -1,0 +1,28 @@
+repo_type: default  # Options: default, ai_agent, api, frontend
+review_strictness: medium  # Options: low, medium, high
+
+enabled_checks:
+  code_style: true
+  security: true
+  performance: true
+  test_coverage: true
+  documentation: true
+
+# AI-specific checks (only for ai_agent repos)
+ai_checks:
+  prompt_engineering: false
+  model_versioning: false
+  response_validation: false
+
+# API-specific checks (only for api repos)
+api_checks:
+  openapi_validation: false
+  error_handling: false
+  rate_limiting: false
+  authentication: false
+
+# Data privacy compliance
+data_privacy:
+  pii_scan: true
+  gdpr_compliance: true
+  ccpa_compliance: true
