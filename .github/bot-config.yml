@@ -1,4 +1,4 @@
-repo_type: default  # Options: default, ai_agent, api, frontend
+repo_type: frontend  # Options: default, ai_agent, api, frontend
 review_strictness: medium  # Options: low, medium, high
 
 enabled_checks:
