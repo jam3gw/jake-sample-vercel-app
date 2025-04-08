@@ -1,28 +1,41 @@
-repo_type: frontend  # Options: default, ai_agent, api, frontend
-review_strictness: medium  # Options: low, medium, high
+# GitHub Review Bot Configuration
 
-enabled_checks:
+# Required: Repository type
+type: frontend  # Since this is a Next.js app
+
+# Required: Review strictness level
+strictness: medium  # Options: low, medium, high
+
+# Optional: Custom rules
+rules:
+  # Enable/disable specific checks
   code_style: true
   security: true
-  performance: true
-  test_coverage: true
   documentation: true
+  tests: true
+  performance: true
 
-# AI-specific checks (only for ai_agent repos)
-ai_checks:
-  prompt_engineering: false
-  model_versioning: false
-  response_validation: false
+  # Custom thresholds
+  min_test_coverage: 80
+  max_file_size_kb: 100
+  max_complexity: 10
 
-# API-specific checks (only for api repos)
-api_checks:
-  openapi_validation: false
-  error_handling: false
-  rate_limiting: false
-  authentication: false
+# Next.js specific settings
+nextjs:
+  check_app_directory: true
+  check_image_optimization: true
+  check_metadata: true
+  check_api_routes: true
+  check_middleware: true
 
-# Data privacy compliance
-data_privacy:
-  pii_scan: true
-  gdpr_compliance: true
-  ccpa_compliance: true
+# Vercel specific settings
+vercel:
+  check_vercel_json: true
+  check_environment_vars: true
+  check_build_settings: true
+
+# Optional: Custom messages
+messages:
+  approval: "✅ All checks passed! Great work!"
+  request_changes: "⚠️ Please address the following issues:"
+  error: "❌ Critical issues found that must be fixed:"

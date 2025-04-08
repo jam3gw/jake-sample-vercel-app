@@ -1,5 +1,4 @@
 name: Code Review
-
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -7,15 +6,34 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Run Code Review Bot
-        uses: jam3gw/github-review-bot@main
+      - uses: actions/checkout@v4
         with:
-          config-path: .github/bot-config.yml
-          github-token: ${{ secrets.GITHUB_TOKEN }} 
+          fetch-depth: 0  # Fetch all history for proper diff analysis
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black bandit pyyaml
+          npm install
+          npm install -g next@latest
+
+      - name: Run code review
+        uses: jam3gw/github-review-bot@v1.0.0  # This is where you reference your bot
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONFIG_PATH: .github/bot-config.yml
+          NODE_ENV: production
