@@ -41,9 +41,9 @@ jobs:
           pip install -e .
 
       - name: Run code review
-        uses: jam3gw/github-review-bot@main
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd github-review-bot
+          python -m github_review_bot.main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONFIG_PATH: .github/bot-config.yml
