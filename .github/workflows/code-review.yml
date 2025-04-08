@@ -1,0 +1,21 @@
+name: Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Code Review Bot
+        uses: jam3gw/github-review-bot@main
+        with:
+          config-path: .github/bot-config.yml
+          github-token: ${{ secrets.GITHUB_TOKEN }} 
