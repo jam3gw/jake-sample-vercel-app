@@ -34,6 +34,12 @@ jobs:
           pnpm install
           pnpm add -g next@latest
 
+      - name: Install GitHub Review Bot
+        run: |
+          git clone https://github.com/jam3gw/github-review-bot.git
+          cd github-review-bot
+          pip install -e .
+
       - name: Run code review
         uses: jam3gw/github-review-bot@main
         with:
